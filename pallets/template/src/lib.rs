@@ -40,7 +40,7 @@ pub mod pallet {
 
 	// StarageMap is type key-value
 	#[pallet::storage]
-	pub type Number<T: Config> = StorageMap<_, Blake2_128Concat, 
+	pub type SomethingNumber<T: Config> = StorageMap<_, Blake2_128Concat, 
 					T::AccountId, 
 					u32, 
 					ValueQuery, >;
@@ -118,7 +118,7 @@ pub mod pallet {
 			let who = ensure_signed(origin)?;
 
 			// Update storage.
-			<Number<T>>::insert(who.clone(), number);
+			<SomethingNumber<T>>::insert(who.clone(), number);
 
 			// Emit an event.
 			Self::deposit_event(Event::SomethingStored(number, who));
@@ -126,7 +126,7 @@ pub mod pallet {
 		}
 
 		// delete_number
-		#[pallet::weight(10_000 + T::DbWeight::get().reads_writes(1,1))]
+		#[pallet::weight(10_000 + T::DbWeight::get().writes(1))]
 		pub fn remove_number(origin: OriginFor<T>) -> DispatchResult {
 			// Check that the extrinsic was signed and get the signer.
 			// This function will return an error if the extrinsic is not signed.
@@ -135,9 +135,9 @@ pub mod pallet {
 
 			// Variable for Event SomethingRemoved
 			let temp = who.clone();
-			
+
 			//Remove AccountId and number from storage.
-			<Number<T>>::remove(who);
+			<SomethingNumber<T>>::remove(who);
 
 			// Emit an event.
 			Self::deposit_event(Event::SomethingRemoved(temp));
